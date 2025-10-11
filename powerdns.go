@@ -1,4 +1,5 @@
 // Copyright 2022 Nicky Gerritsen
+// Copyright 2025 victories
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +16,7 @@
 package powerdns
 
 import (
-	"github.com/libdns/powerdns"
+	"github.com/victories/libdns-powerdns"
 
 	"github.com/caddyserver/caddy/v2"
 	"github.com/caddyserver/caddy/v2/caddyconfig/caddyfile"
