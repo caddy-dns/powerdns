@@ -8,20 +8,32 @@ This package contains a DNS provider module for [Caddy](https://github.com/caddy
 
 ## 🚀 Quick Start
 
-### Installation with xcaddy
+### Basic Installation
 
 ```bash
-xcaddy build v2.10.0 \
+xcaddy build v2.10.2 \
     --with github.com/victories/powerdns@latest
 ```
 
-### With Additional Plugins
+### With Common Security Plugins
 
 ```bash
-xcaddy build v2.10.0 \
+xcaddy build v2.10.2 \
     --with github.com/victories/powerdns@latest \
     --with github.com/shift72/caddy-geo-ip \
-    --with github.com/hslatman/caddy-crowdsec-bouncer/http
+    --with github.com/steffenbusch/caddy-bot-barrier \
+    --with git.gorbe.io/caddy/geoip \
+    --with github.com/WeidiDeng/caddy-cloudflare-ip \
+    --with github.com/deanchou/caddy_ip_filter
+```
+
+### Alternative with CrowdSec
+
+```bash
+xcaddy build v2.10.2 \
+    --with github.com/victories/powerdns@latest \
+    --with github.com/hslatman/caddy-crowdsec-bouncer/http \
+    --with github.com/shift72/caddy-geo-ip
 ```
 
 ## 📝 Configuration
@@ -46,15 +58,35 @@ tls {
 }
 ```
 
-### Complete Example
+### Complete Example with GeoIP and Bot Protection
 
 ```caddyfile
+{
+    order geoip before bot_barrier
+}
+
 example.com {
     tls {
         dns powerdns {
             server_url https://dns.example.com:8081
             api_token {env.POWERDNS_API_TOKEN}
         }
+    }
+    
+    # GeoIP blocking
+    geoip {
+        db_path /path/to/GeoLite2-Country.mmdb
+    }
+    
+    @blocked_countries {
+        expression `{geoip.country_code} in ['CN', 'RU', 'KP']`
+    }
+    
+    respond @blocked_countries 403
+    
+    # Bot protection
+    bot_barrier {
+        block_ua "BadBot"
     }
     
     reverse_proxy localhost:8080
@@ -72,6 +104,11 @@ example.com {
     @app1 host app1.example.com
     handle @app1 {
         reverse_proxy localhost:8001
+    }
+    
+    @app2 host app2.example.com
+    handle @app2 {
+        reverse_proxy localhost:8002
     }
 }
 ```
@@ -137,6 +174,23 @@ export POWERDNS_SERVER_URL="https://dns.example.com:8081"
 export POWERDNS_API_TOKEN="your-api-token-here"
 ```
 
+## 🔄 Migration from Local Build
+
+**Before (with local paths):**
+```bash
+xcaddy build v2.10.2 \
+    --with github.com/caddy-dns/powerdns=/root/powerdns-main \
+    --with github.com/libdns/powerdns=/root/libdns-powerdns
+```
+
+**After (with GitHub):**
+```bash
+xcaddy build v2.10.2 \
+    --with github.com/victories/powerdns@latest
+```
+
+No more local paths needed! 🎉
+
 ## 🆚 Differences from Original
 
 This fork includes:
@@ -145,12 +199,23 @@ This fork includes:
 - ✅ **Uses patched libdns-powerdns with v1.0 API support**
 - ✅ **Fully tested and working**
 - ✅ **Updated module path to victories/powerdns**
+- ✅ **No local paths required**
 
 ## 📚 Related Repositories
 
 - **libdns Provider:** [victories/libdns-powerdns](https://github.com/victories/libdns-powerdns)
 - **Original Caddy Module:** [caddy-dns/powerdns](https://github.com/caddy-dns/powerdns)
 - **PowerDNS:** [PowerDNS/pdns](https://github.com/PowerDNS/pdns)
+
+## 🔌 Recommended Plugins
+
+These plugins work well with this PowerDNS provider:
+
+- **caddy-geo-ip** - GeoIP blocking
+- **caddy-bot-barrier** - Bot protection
+- **caddy-crowdsec-bouncer** - CrowdSec integration
+- **caddy-cloudflare-ip** - Cloudflare real IP
+- **caddy_ip_filter** - IP filtering
 
 ## 🤝 Contributing
 
