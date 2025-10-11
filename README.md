@@ -11,14 +11,14 @@ This package contains a DNS provider module for [Caddy](https://github.com/caddy
 ### Basic Installation
 
 ```bash
-xcaddy build v2.10.2 \
+xcaddy build v2.10.0 \
     --with github.com/victories/powerdns@latest
 ```
 
 ### With Common Security Plugins
 
 ```bash
-xcaddy build v2.10.2 \
+xcaddy build v2.10.0 \
     --with github.com/victories/powerdns@latest \
     --with github.com/shift72/caddy-geo-ip \
     --with github.com/steffenbusch/caddy-bot-barrier \
@@ -30,7 +30,7 @@ xcaddy build v2.10.2 \
 ### Alternative with CrowdSec
 
 ```bash
-xcaddy build v2.10.2 \
+xcaddy build v2.10.0 \
     --with github.com/victories/powerdns@latest \
     --with github.com/hslatman/caddy-crowdsec-bouncer/http \
     --with github.com/shift72/caddy-geo-ip
@@ -178,14 +178,14 @@ export POWERDNS_API_TOKEN="your-api-token-here"
 
 **Before (with local paths):**
 ```bash
-xcaddy build v2.10.2 \
+xcaddy build v2.10.0 \
     --with github.com/caddy-dns/powerdns=/root/powerdns-main \
     --with github.com/libdns/powerdns=/root/libdns-powerdns
 ```
 
 **After (with GitHub):**
 ```bash
-xcaddy build v2.10.2 \
+xcaddy build v2.10.0 \
     --with github.com/victories/powerdns@latest
 ```
 
